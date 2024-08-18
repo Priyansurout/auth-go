@@ -32,7 +32,7 @@ func main() {
 	router := gin.Default()
 
 	// Load the routes
-	routes.AuthRoutes(router)
+	routes.AuthRoutes(router, db)
 
 	// Run the server
 	router.Run(":8000")

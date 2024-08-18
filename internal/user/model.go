@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -10,6 +11,12 @@ type User struct {
 	Username string `gorm:"unique;not null"`
 	Password string `gorm:"not null"`
 	Age      int    `gorm:"not null"`
+}
+
+type Claims struct {
+	UserID   uint   `json:"user_id"`
+	Username string `json:"username"`
+	jwt.StandardClaims
 }
 
 // InitializeDB initializes the database connection and migrates the schema.
