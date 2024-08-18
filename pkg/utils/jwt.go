@@ -7,7 +7,7 @@ import (
 	"github.com/priyansurout/auth-microservice/internal/user"
 )
 
-var jwtKey = []byte("your-secret-key") // Replace with a secure key
+var jwtKey = []byte("yourname")
 
 func GenerateJWT(userID uint, username string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour) // Set token expiration
