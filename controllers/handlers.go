@@ -49,7 +49,9 @@ func LoginHandler(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"token": token})
+		c.SetCookie("auth_token", token, 24*3600, "/", "", false, true)
+
+		c.JSON(http.StatusOK, gin.H{"message": "User logged in"})
 	}
 }
 
