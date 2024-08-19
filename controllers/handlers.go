@@ -93,7 +93,7 @@ func SignupHandler(db *gorm.DB) gin.HandlerFunc {
 
 func LogoutHandler(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Handle user logout
+		c.SetCookie("token", "", -1, "/", "localhost", false, true)
 		c.JSON(http.StatusOK, gin.H{"message": "User logged out"})
 	}
 }
