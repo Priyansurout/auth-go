@@ -58,7 +58,36 @@ func LoginHandler(db *gorm.DB) gin.HandlerFunc {
 func SignupHandler(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Handle user registration
-		c.JSON(http.StatusOK, gin.H{"message": "User registered"})
+
+		var reqUser user.User
+
+		if err := c.ShouldBindJSON(&reqUser); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		var existingUser user.User
+		if err := db.Where("username = ?", reqUser.Username).First(&existingUser).Error; err == nil {
+			c.JSON(http.StatusConflict, gin.H{"error": "User already exists"})
+			return
+		}
+
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(reqUser.Password), bcrypt.DefaultCost)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+			return
+		}
+
+		reqUser.Password = string(hashedPassword)
+
+		if err := db.Create(&reqUser).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register user"})
+			return
+		}
+
+		// Return a success response
+		c.JSON(http.StatusOK, gin.H{"message": "User registered successfully"})
+
 	}
 }
 
